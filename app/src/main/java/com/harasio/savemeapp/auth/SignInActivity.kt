@@ -13,7 +13,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.harasio.savemeapp.MainActivity
+import com.harasio.savemeapp.BottomNavActivity
 import com.harasio.savemeapp.R
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
@@ -34,9 +34,9 @@ class SignInActivity : AppCompatActivity() {
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         //Firebase Auth instance
@@ -112,7 +112,7 @@ class SignInActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?){
         if (currentUser != null){
             if (currentUser.isEmailVerified){
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, BottomNavActivity::class.java))
                 finish()
             } else {
                 Toast.makeText(baseContext, "Please verify your email address",
@@ -150,17 +150,17 @@ class SignInActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("SignInActivity", "signInWithCredential:success")
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.d("SignInActivity", "signInWithCredential:failure")
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d("SignInActivity", "signInWithCredential:success")
+                        val intent = Intent(this, BottomNavActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.d("SignInActivity", "signInWithCredential:failure")
+                    }
                 }
-            }
     }
 }

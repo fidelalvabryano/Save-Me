@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.harasio.savemeapp">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SaveMeApp">
-        <activity android:name=".auth.ForgotPasswordActivity"></activity>
+        <activity
+            android:name=".BottomNavActivity"
+            android:label="@string/title_activity_bottom_nav"></activity>
+        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".auth.ForgotPasswordActivity" />
         <activity android:name=".auth.RegisterActivity" />
         <activity android:name=".StartActivity">
             <intent-filter>
@@ -19,7 +25,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".auth.SignInActivity" />
-        <activity android:name=".MainActivity" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDRydAUnJue93pe0Ey0oJHEZuITxlDvTz0" />
     </application>
 
 </manifest>
