@@ -13,8 +13,11 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.harasio.savemeapp.BottomNavActivity
 import com.harasio.savemeapp.R
+import com.harasio.savemeapp.User
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
 
@@ -25,12 +28,17 @@ class SignInActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var database: FirebaseDatabase
+    private lateinit var myRef: DatabaseReference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
         supportActionBar?.hide()
 
+        database = FirebaseDatabase.getInstance("https://b21-cap0083-default-rtdb.asia-southeast1.firebasedatabase.app/")
+        myRef = database.getReference("users")
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -154,6 +162,7 @@ class SignInActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("SignInActivity", "signInWithCredential:success")
+                        saveData()
                         val intent = Intent(this, BottomNavActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -162,5 +171,20 @@ class SignInActivity : AppCompatActivity() {
                         Log.d("SignInActivity", "signInWithCredential:failure")
                     }
                 }
+    }
+
+    private fun saveData() {
+        val name = auth.currentUser?.displayName
+        val email = auth.currentUser?.email
+        val uid = auth.currentUser?.uid
+
+        val user = User(name, email, uid)
+        if (uid != null) {
+            myRef.child(uid).setValue(user).addOnCompleteListener{
+                Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener{
+                Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

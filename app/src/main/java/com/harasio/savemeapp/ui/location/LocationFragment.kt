@@ -23,9 +23,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.Task
-import com.google.android.libraries.places.api.internal.impl.net.pablo.PlaceResult
-import com.google.android.libraries.places.internal.it
+
 
 
 import com.harasio.savemeapp.databinding.FragmentLocationBinding

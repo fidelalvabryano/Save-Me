@@ -11,6 +11,7 @@
     <string name="name">Name</string>
     <string name="email_address">Email address</string>
     <string name="password">Password</string>
+    <string name="confirm_password">Re-enter Password</string>
     <string name="sign_out">Sign out</string>
     <string name="reset_password">Reset Password</string>
     <string name="title_activity_bottom_nav">MainActivity</string>

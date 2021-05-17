@@ -36,15 +36,15 @@ class HomeFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
 
-        if(currentUser.getIdToken(false).getResult()?.signInProvider == "google.com")
+        if(currentUser?.getIdToken(false)?.getResult()?.signInProvider == "google.com")
         {
             binding.tvFullnameHome.text = currentUser.displayName
         }
         else
         {
-            val email = currentUser.email
-            var indx= email.indexOf('@')
-            val name =email.substring(0,indx)
+            val email = currentUser?.email
+            var indx = email?.indexOf('@')
+            val name = email?.substring(0, indx!!)
             binding.tvFullnameHome.text = name
         }
 
