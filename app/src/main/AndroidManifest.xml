@@ -3,6 +3,8 @@
     package="com.harasio.savemeapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +16,6 @@
         <activity
             android:name=".BottomNavActivity"
             android:label="@string/title_activity_bottom_nav"></activity>
-        <activity android:name=".MapActivity"></activity>
         <activity android:name=".auth.ForgotPasswordActivity" />
         <activity android:name=".auth.RegisterActivity" />
         <activity android:name=".StartActivity">

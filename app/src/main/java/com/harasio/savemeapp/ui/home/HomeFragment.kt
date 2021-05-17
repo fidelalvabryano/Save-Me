@@ -5,14 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.harasio.savemeapp.MapActivity
-import com.harasio.savemeapp.R
 import com.harasio.savemeapp.auth.SignInActivity
 import com.harasio.savemeapp.databinding.FragmentHomeBinding
 
@@ -57,10 +52,7 @@ class HomeFragment : Fragment() {
 
 
 
-        binding.btnMap.setOnClickListener{
-            val intent = Intent(context, MapActivity::class.java)
-            startActivity(intent)
-        }
+
 
 
 
