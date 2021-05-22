@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".StartActivity"
-    android:background="@drawable/ic_start_splash">
+    android:background="@drawable/start_splash">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

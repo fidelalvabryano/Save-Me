@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.harasio.savemeapp.BottomNavActivity
 import com.harasio.savemeapp.R
 import com.harasio.savemeapp.User
@@ -120,6 +121,7 @@ class SignInActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?){
         if (currentUser != null){
             if (currentUser.isEmailVerified){
+                retrieveAndStoreToken()
                 startActivity(Intent(this, BottomNavActivity::class.java))
                 finish()
             } else {
@@ -163,6 +165,7 @@ class SignInActivity : AppCompatActivity() {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("SignInActivity", "signInWithCredential:success")
                         saveData()
+                        retrieveAndStoreToken()
                         val intent = Intent(this, BottomNavActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -186,5 +189,18 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun retrieveAndStoreToken() {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token: String? = task.result
+                    val userId: String? = auth.currentUser?.uid
+                    if (userId != null) {
+                        FirebaseDatabase.getInstance("https://b21-cap0083-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("tokens").child(userId).setValue(token)
+                    }
+                }
+            }
     }
 }

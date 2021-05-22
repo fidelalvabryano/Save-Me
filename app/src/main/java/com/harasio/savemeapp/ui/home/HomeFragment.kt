@@ -1,13 +1,16 @@
 package com.harasio.savemeapp.ui.home
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.harasio.savemeapp.R
 import com.harasio.savemeapp.auth.SignInActivity
 import com.harasio.savemeapp.databinding.FragmentHomeBinding
 
@@ -48,7 +51,20 @@ class HomeFragment : Fragment() {
             binding.tvFullnameHome.text = name
         }
 
+        binding.btnPanic.setMainMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24, R.drawable.ic_outline_cancel_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
+            .setOnMenuSelectedListener(){
+                when(it) {
+                    0 -> Toast.makeText(context, "0 selected", Toast.LENGTH_SHORT).show()
+                    1 -> Toast.makeText(context, "1 selected", Toast.LENGTH_SHORT).show()
+                    2 -> Toast.makeText(context, "2 selected", Toast.LENGTH_SHORT).show()
+                    3 -> Toast.makeText(context, "3 selected", Toast.LENGTH_SHORT).show()
 
+                }
+            }
 
 
 
