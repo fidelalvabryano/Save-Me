@@ -2,6 +2,7 @@ package com.harasio.savemeapp.ui.home
 
 import android.content.Intent
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.GoogleMap
 import com.google.firebase.auth.FirebaseAuth
 import com.harasio.savemeapp.R
 import com.harasio.savemeapp.auth.SignInActivity
@@ -18,16 +21,16 @@ class HomeFragment : Fragment() {
 
     private lateinit var mAuth: FirebaseAuth
     private var _binding: FragmentHomeBinding? = null
+    private val LOCATION_PERMISSION_REQUEST = 1
+    lateinit var googleMap: GoogleMap
+    private lateinit var currlocation : Location
+    //private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
@@ -38,6 +41,7 @@ class HomeFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.hide()
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
+
 
         if(currentUser?.getIdToken(false)?.getResult()?.signInProvider == "google.com")
         {

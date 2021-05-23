@@ -38,11 +38,7 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
     private lateinit var currlocation : Location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentLocationBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -58,20 +54,10 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         binding.mapView.getMapAsync(this)
         currlocation = Location("dummyprovider")
         fusedLocationProviderClient = activity?.let {
-            LocationServices.getFusedLocationProviderClient(
-                    it
-            )
+            LocationServices.getFusedLocationProviderClient(it)
         }!!
-
-
-
-
-
         return root
     }
-
-
-
 
     private fun getLocationAccess() {
         if (context?.let { ContextCompat.checkSelfPermission(it, android.Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
@@ -92,9 +78,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         else
             activity?.let { ActivityCompat.requestPermissions(it, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST) }
     }
-
-
-
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == LOCATION_PERMISSION_REQUEST) {
@@ -130,12 +113,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-
-
-
-
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding.mapView.onDestroy()
@@ -148,16 +125,10 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         binding.mapView.onResume()
     }
 
-
-
     override fun onMapReady(map : GoogleMap) {
-
         map.let{
             googleMap = it
         }
-
         getLocationAccess()
-
     }
-
 }
