@@ -13,22 +13,34 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.GoogleMap
 import com.google.firebase.auth.FirebaseAuth
+import com.harasio.savemeapp.MyFirebaseMessagingService
 import com.harasio.savemeapp.R
 import com.harasio.savemeapp.auth.SignInActivity
 import com.harasio.savemeapp.databinding.FragmentHomeBinding
+import com.loopj.android.http.AsyncHttpClient
+import com.loopj.android.http.AsyncHttpResponseHandler
+import com.loopj.android.http.RequestParams
+import cz.msebera.android.httpclient.Header
 
 class HomeFragment : Fragment() {
 
+    companion object {
+        const val EXTRA_UID = "extra_uid"
+        const val EXTRA_DEVICE_TOKEN = "extra_device_token"
+    }
+
     private lateinit var mAuth: FirebaseAuth
     private var _binding: FragmentHomeBinding? = null
+    private lateinit var myfms: MyFirebaseMessagingService
     private val LOCATION_PERMISSION_REQUEST = 1
     lateinit var googleMap: GoogleMap
     private lateinit var currlocation : Location
-    //private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -41,7 +53,6 @@ class HomeFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.hide()
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
-
 
         if(currentUser?.getIdToken(false)?.getResult()?.signInProvider == "google.com")
         {
@@ -61,20 +72,55 @@ class HomeFragment : Fragment() {
             .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
             .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
             .setOnMenuSelectedListener(){
+                /*ini kalo data uid & token yg kita kirim gak sama kaya yg ada di firestore,
+                data lat longnya gak akan kekirim*/
+                val uid = arguments?.getString("useruid")
+                var long : Double = 0.0
+                var lat : Double = 0.0
+                var token = arguments?.getString("devicetoken")
+                var kejahatan = ""
+
                 when(it) {
-                    0 -> Toast.makeText(context, "0 selected", Toast.LENGTH_SHORT).show()
-                    1 -> Toast.makeText(context, "1 selected", Toast.LENGTH_SHORT).show()
-                    2 -> Toast.makeText(context, "2 selected", Toast.LENGTH_SHORT).show()
-                    3 -> Toast.makeText(context, "3 selected", Toast.LENGTH_SHORT).show()
+                    0 -> {
+                        kejahatan = "Kejahatan 1"
+                    }
+                    1 -> {
+                        kejahatan = "Kejahatan 2"
+                    }
+                    2 -> {
+                        kejahatan = "Kejahatan 3"
+                    }
+                    3 -> {
+                        kejahatan = "Kejahatan 4"
+                    }
 
                 }
+                val client = AsyncHttpClient()
+                val url = "http://159.65.4.250:3000/api/ping/v1/ping"
+                val params = RequestParams()
+                params.put("_id", uid)
+                params.put("kejahatan", kejahatan)
+                params.put("long", long)
+                params.put("lat", lat)
+                params.put("deviceRegistrationToken", token)
+                client.post(url, params ,object : AsyncHttpResponseHandler() {
+                    override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                        Toast.makeText(context, "MANTAP SUKSES PING!", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
+                        Toast.makeText(context, "GAGAL PING!!!", Toast.LENGTH_SHORT).show()
+                    }
+                })
+                //untuk cek isi data yg dikirim ke server apa aja
+                Toast.makeText(context, uid, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, kejahatan, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, long.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, lat.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, token, Toast.LENGTH_SHORT).show()
+
+
             }
-
-
-
-
-
-
 
         binding.signOutBtn.setOnClickListener{
             mAuth.signOut()
@@ -85,10 +131,12 @@ class HomeFragment : Fragment() {
 
     }
 
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+//    private fun getDeviceRegistrationToken() : String? {
+//        return myfms.getToken(context)
+//    }
 }

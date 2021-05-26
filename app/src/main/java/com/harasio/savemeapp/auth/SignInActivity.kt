@@ -17,8 +17,14 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.harasio.savemeapp.BottomNavActivity
+import com.harasio.savemeapp.MyFirebaseMessagingService
 import com.harasio.savemeapp.R
 import com.harasio.savemeapp.User
+import com.harasio.savemeapp.ui.home.HomeFragment
+import com.loopj.android.http.AsyncHttpClient
+import com.loopj.android.http.AsyncHttpResponseHandler
+import com.loopj.android.http.RequestParams
+import cz.msebera.android.httpclient.Header
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
 
@@ -31,7 +37,8 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var database: FirebaseDatabase
     private lateinit var myRef: DatabaseReference
-
+    private lateinit var myfms: MyFirebaseMessagingService
+    private lateinit var bundle: Bundle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,7 +128,9 @@ class SignInActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?){
         if (currentUser != null){
             if (currentUser.isEmailVerified){
-                retrieveAndStoreToken()
+                bundle.putString("useruid", currentUser.uid)
+                bundle.putString("devicetoken", getDeviceRegistrationToken())
+                saveData()
                 startActivity(Intent(this, BottomNavActivity::class.java))
                 finish()
             } else {
@@ -165,7 +174,6 @@ class SignInActivity : AppCompatActivity() {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("SignInActivity", "signInWithCredential:success")
                         saveData()
-                        retrieveAndStoreToken()
                         val intent = Intent(this, BottomNavActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -177,30 +185,29 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-        val name = auth.currentUser?.displayName
-        val email = auth.currentUser?.email
+        /*ini juga harusnya uidnya pake hasil hash dari email address, kalo gak datanya gak akan kekirim*/
         val uid = auth.currentUser?.uid
+        val token = getDeviceRegistrationToken()
 
-        val user = User(name, email, uid)
-        if (uid != null) {
-            myRef.child(uid).setValue(user).addOnCompleteListener{
-                Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener{
-                Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
+        val client = AsyncHttpClient()
+        val url = "http://159.65.4.250:3000/api/account/v1/updateRegistrationToken"
+        val params = RequestParams()
+        params.put("_id", uid)
+        params.put("deviceRegistrationToken", token)
+        client.post(url, params ,object : AsyncHttpResponseHandler() {
+            override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                Toast.makeText(this@SignInActivity, "MANTAP UPDATE SUKSES!", Toast.LENGTH_SHORT).show()
             }
-        }
+
+            override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
+                Toast.makeText(this@SignInActivity, "UPDATE GAGAL!!!", Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
-    private fun retrieveAndStoreToken() {
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val token: String? = task.result
-                    val userId: String? = auth.currentUser?.uid
-                    if (userId != null) {
-                        FirebaseDatabase.getInstance("https://b21-cap0083-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("tokens").child(userId).setValue(token)
-                    }
-                }
-            }
+    private fun getDeviceRegistrationToken() : String? {
+        Toast.makeText(this@SignInActivity,myfms.getToken(applicationContext),Toast.LENGTH_LONG).show()
+        return myfms.getToken(applicationContext)
     }
 }

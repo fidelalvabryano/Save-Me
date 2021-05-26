@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.harasio.savemeapp.MyFirebaseMessagingService
 import com.harasio.savemeapp.R
 import com.harasio.savemeapp.User
 import com.loopj.android.http.AsyncHttpClient
@@ -30,6 +31,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
     private lateinit var myRef: DatabaseReference
+    private lateinit var myfms: MyFirebaseMessagingService
 
     companion object {
         private val TAG = RegisterActivity::class.java.simpleName
@@ -42,6 +44,7 @@ class RegisterActivity : AppCompatActivity() {
 
         database = FirebaseDatabase.getInstance("https://b21-cap0083-default-rtdb.asia-southeast1.firebasedatabase.app/")
         myRef = database.getReference("users")
+        myfms = MyFirebaseMessagingService()
 
 
         btn_register.setOnClickListener{
@@ -172,19 +175,8 @@ class RegisterActivity : AppCompatActivity() {
         })
     }
 
-    private fun getDeviceRegistrationToken() : String {
-        var token = "-TOKEN-TOKEN-TOKEN-TOKEN-TOKEN-TOKEN-TOKEN-TOKEN"
-        if (token.isEmpty()) {
-            FirebaseMessaging.getInstance().token
-                .addOnCompleteListener{ task ->
-                    if (task.isSuccessful) {
-                        token = task.result
-                    } else if (!task.isSuccessful) {
-                        Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                        return@addOnCompleteListener
-                    }
-                }
-        }
-        return token
+    private fun getDeviceRegistrationToken() : String? {
+        Toast.makeText(this@RegisterActivity,myfms.getToken(applicationContext),Toast.LENGTH_LONG).show()
+        return myfms.getToken(applicationContext)
     }
 }
