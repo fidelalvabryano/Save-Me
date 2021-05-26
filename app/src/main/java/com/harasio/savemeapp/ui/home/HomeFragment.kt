@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
                         )
                     } != PackageManager.PERMISSION_GRANTED
                 ) {
-                  
+
                     return
                 }
             }
