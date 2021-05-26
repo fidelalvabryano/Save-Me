@@ -41,7 +41,8 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
         supportActionBar?.hide()
-
+        bundle = Bundle()
+        myfms = MyFirebaseMessagingService()
         database = FirebaseDatabase.getInstance("https://b21-cap0083-default-rtdb.asia-southeast1.firebasedatabase.app/")
         myRef = database.getReference("users")
 
@@ -125,7 +126,6 @@ class SignInActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?){
         if (currentUser != null){
             if (currentUser.isEmailVerified){
-                bundle.putString("useruid", currentUser.email?.md5)
                 bundle.putString("devicetoken", getDeviceRegistrationToken())
                 saveData()
                 startActivity(Intent(this, BottomNavActivity::class.java))
@@ -183,7 +183,7 @@ class SignInActivity : AppCompatActivity() {
 
     private fun saveData() {
         /*ini juga harusnya uidnya pake hasil hash dari email address, kalo gak datanya gak akan kekirim*/
-        val uid = auth.currentUser?.email?.md5
+        val uid = auth.currentUser?.uid
         val token = getDeviceRegistrationToken()
 
         val client = AsyncHttpClient()

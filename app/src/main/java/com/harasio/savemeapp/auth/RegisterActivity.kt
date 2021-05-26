@@ -139,6 +139,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
+        val uid = auth.currentUser?.uid
         val name = et_name.text.toString()
         val email = et_email.text.toString()
         val password = et_password.text.toString()
@@ -153,6 +154,7 @@ class RegisterActivity : AppCompatActivity() {
         val client = AsyncHttpClient()
         val url = "http://159.65.4.250:3000/api/account/v1/register"
         val params = RequestParams()
+        params.put("_id", uid)
         params.put("fullname", name)
         params.put("email", email)
         params.put("password", password)

@@ -17,6 +17,7 @@ import com.harasio.savemeapp.MyFirebaseMessagingService
 import com.harasio.savemeapp.R
 import com.harasio.savemeapp.auth.SignInActivity
 import com.harasio.savemeapp.databinding.FragmentHomeBinding
+import com.harasio.savemeapp.md5
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.RequestParams
@@ -53,6 +54,7 @@ class HomeFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.hide()
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
+        myfms = MyFirebaseMessagingService()
 
         if(currentUser?.getIdToken(false)?.getResult()?.signInProvider == "google.com")
         {
@@ -74,10 +76,10 @@ class HomeFragment : Fragment() {
             .setOnMenuSelectedListener(){
                 /*ini kalo data uid & token yg kita kirim gak sama kaya yg ada di firestore,
                 data lat longnya gak akan kekirim*/
-                val uid = arguments?.getString("useruid")
+                val uid = mAuth.currentUser?.uid
                 var long : Double = 0.0
                 var lat : Double = 0.0
-                var token = arguments?.getString("devicetoken")
+                var token = getDeviceRegistrationToken()
                 var kejahatan = ""
 
                 when(it) {
@@ -136,7 +138,7 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-//    private fun getDeviceRegistrationToken() : String? {
-//        return myfms.getToken(context)
-//    }
+    private fun getDeviceRegistrationToken() : String? {
+        return myfms.getToken(context)
+    }
 }
