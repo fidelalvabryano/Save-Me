@@ -16,10 +16,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessaging
-import com.harasio.savemeapp.BottomNavActivity
-import com.harasio.savemeapp.MyFirebaseMessagingService
-import com.harasio.savemeapp.R
-import com.harasio.savemeapp.User
+import com.harasio.savemeapp.*
 import com.harasio.savemeapp.ui.home.HomeFragment
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
@@ -128,7 +125,7 @@ class SignInActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?){
         if (currentUser != null){
             if (currentUser.isEmailVerified){
-                bundle.putString("useruid", currentUser.uid)
+                bundle.putString("useruid", currentUser.email?.md5)
                 bundle.putString("devicetoken", getDeviceRegistrationToken())
                 saveData()
                 startActivity(Intent(this, BottomNavActivity::class.java))
@@ -186,7 +183,7 @@ class SignInActivity : AppCompatActivity() {
 
     private fun saveData() {
         /*ini juga harusnya uidnya pake hasil hash dari email address, kalo gak datanya gak akan kekirim*/
-        val uid = auth.currentUser?.uid
+        val uid = auth.currentUser?.email?.md5
         val token = getDeviceRegistrationToken()
 
         val client = AsyncHttpClient()
