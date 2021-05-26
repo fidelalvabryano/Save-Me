@@ -31,4 +31,5 @@
     <string name="kota">Kota</string>
     <string name="provinsi">Provinsi</string>
     <string name="zipcode">Zipcode</string>
+    <string name="update">Update</string>
 </resources>

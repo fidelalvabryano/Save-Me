@@ -28,11 +28,7 @@ class ProfileFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
@@ -56,8 +52,23 @@ class ProfileFragment : Fragment() {
                     val responseObject = JSONObject(result)
                     val dataObject = responseObject.getJSONObject("data")
 
-                    val ausername = dataObject.getString("fullname")
-                    Toast.makeText(context, ausername, Toast.LENGTH_SHORT).show()
+                    val detFullname = dataObject.getString("fullname")
+                    val detEmail = dataObject.getString("email")
+                    val detUmur = dataObject.getString("umur")
+                    val detGender = dataObject.getString("gender")
+                    val detAlamat = dataObject.getString("alamat")
+                    val detKota = dataObject.getString("kota")
+                    val detProvinsi = dataObject.getString("provinsi")
+                    val detZipcode = dataObject.getString("zipcode")
+
+                    _binding?.txtDetFullname?.text = detFullname
+                    _binding?.txtDetEmail?.text = detEmail
+                    _binding?.txtDetUmur?.hint = detUmur
+                    _binding?.txtDetGender?.text = detGender
+                    _binding?.txtDetAlamat?.hint = detAlamat
+                    _binding?.txtDetKota?.hint = detKota
+                    _binding?.txtDetProvinsi?.hint = detProvinsi
+                    _binding?.txtDetZipCode?.hint = detZipcode
 
                 } catch (e: Exception) {
                     Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
