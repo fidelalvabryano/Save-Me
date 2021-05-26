@@ -1,11 +1,11 @@
 package com.harasio.savemeapp.auth
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -15,9 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.harasio.savemeapp.*
-import com.harasio.savemeapp.ui.home.HomeFragment
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.RequestParams
@@ -126,7 +124,6 @@ class SignInActivity : AppCompatActivity() {
     private fun updateUI(currentUser: FirebaseUser?){
         if (currentUser != null){
             if (currentUser.isEmailVerified){
-                bundle.putString("devicetoken", getDeviceRegistrationToken())
                 saveData()
                 startActivity(Intent(this, BottomNavActivity::class.java))
                 finish()
