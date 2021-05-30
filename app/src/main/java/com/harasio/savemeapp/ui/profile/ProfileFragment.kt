@@ -61,14 +61,14 @@ class ProfileFragment : Fragment() {
                     val detProvinsi = dataObject.getString("provinsi")
                     val detZipcode = dataObject.getString("zipcode")
 
-                    _binding?.txtDetFullname?.text = detFullname
-                    _binding?.txtDetEmail?.text = detEmail
-                    _binding?.txtDetUmur?.hint = detUmur
-                    _binding?.txtDetGender?.text = detGender
-                    _binding?.txtDetAlamat?.hint = detAlamat
-                    _binding?.txtDetKota?.hint = detKota
-                    _binding?.txtDetProvinsi?.hint = detProvinsi
-                    _binding?.txtDetZipCode?.hint = detZipcode
+                    binding.txtDetFullname.text = detFullname
+                    binding.txtDetEmail.text = detEmail
+                    binding.txtDetUmur.text = detUmur
+                    binding.txtDetGender.text = detGender
+                    binding.txtDetAlamat.text = detAlamat
+                    binding.txtDetKota.text = detKota
+                    binding.txtDetProvinsi.text = detProvinsi
+                    binding.txtDetZipCode.text = detZipcode
 
                 } catch (e: Exception) {
                     Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
