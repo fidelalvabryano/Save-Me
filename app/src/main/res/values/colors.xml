@@ -8,4 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
+    <color name="dark_red">#821432</color>
+    <color name="darker_red">#6F112B</color>
+    <color name="even_darker_red">#5D0F24</color>
+    <color name="grey">#F0F0F0</color>
+    <color name="dark_grey">#A9A9A9</color>
+    <color name="darker_grey">#3A3B3C</color>
+    <color name="even_darker_grey">#242526</color>
 </resources>

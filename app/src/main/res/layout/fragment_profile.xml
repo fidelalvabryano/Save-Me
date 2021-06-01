@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="70dp"
-                android:text="Wiliam Snoe"
+                android:text="@string/full_name"
                 android:textColor="#fff"
                 android:textSize="21sp"
                 android:textStyle="bold" />
@@ -200,19 +200,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="20dp"
-                android:text="Show all comments"/>
+                android:text="Provinsi"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="25dp"
+            android:orientation="horizontal"
+            android:paddingLeft="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_baseline_phone_24"/>
+            <TextView
+                android:textStyle="bold"
+                android:id="@+id/txtDetNoDarurat"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="No Telp Darurat"/>
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btnUpdateProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="150dp"
-        android:text="@string/update"
-        android:textSize="18sp"
-        />
-
-
 </LinearLayout>

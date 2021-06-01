@@ -6,9 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
-import android.os.Build
-import android.os.Bundle
-import android.os.Parcelable
+import android.media.MediaRecorder
+import android.os.*
 import android.telephony.SmsManager
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +33,7 @@ import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.json.JSONObject
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -44,6 +44,7 @@ class HomeFragment : Fragment() {
     private lateinit var myfms: MyFirebaseMessagingService
     private val LOCATION_PERMISSION_REQUEST = 1
     private val SMS_PERMISSION_REQUEST = 1
+    private val RECORD_PERMISSION_REQUEST = 1
     private lateinit var currlocation : Location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val binding get() = _binding!!
@@ -51,6 +52,8 @@ class HomeFragment : Fragment() {
     private lateinit var bundle: Bundle
     private lateinit var smsManager: SmsManager
     private lateinit var phone: String
+    private lateinit var mediaRecorder: MediaRecorder
+    private var fileName = "recorded.3gp"
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -61,16 +64,29 @@ class HomeFragment : Fragment() {
         fusedLocationProviderClient = activity?.let {
             LocationServices.getFusedLocationProviderClient(it)
         }!!
-        if (checkPermission(Manifest.permission.SEND_SMS)) {
+
+        if (checkSMSPermission(Manifest.permission.SEND_SMS)) {
         } else {
             ActivityCompat.requestPermissions(
                 context as Activity,
                 arrayOf(Manifest.permission.SEND_SMS), SMS_PERMISSION_REQUEST )
         }
+
+        if (checkRecordPermission(Manifest.permission.RECORD_AUDIO)) {
+        } else {
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.RECORD_AUDIO), RECORD_PERMISSION_REQUEST)
+        }
         return root
     }
 
-    private fun checkPermission(permission: String) : Boolean {
+    private fun checkRecordPermission(permission: String) : Boolean {
+        val check = context?.let { ContextCompat.checkSelfPermission(it, permission) }
+        return (check == PackageManager.PERMISSION_GRANTED)
+    }
+
+    private fun checkSMSPermission(permission: String) : Boolean {
         val check = context?.let { ContextCompat.checkSelfPermission(it, permission) }
         return (check == PackageManager.PERMISSION_GRANTED)
     }
@@ -94,6 +110,27 @@ class HomeFragment : Fragment() {
         Toast.makeText(context, "SMS SENT", Toast.LENGTH_SHORT).show()
     }
 
+    private fun record() {
+        fileName = context?.getExternalFilesDir(null)?.absolutePath + "/recording.mp3"
+        mediaRecorder = MediaRecorder()
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB)
+
+        mediaRecorder.setOutputFile(fileName)
+        try {
+            mediaRecorder.prepare()
+            mediaRecorder.start()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun stopRecord() {
+        mediaRecorder.stop()
+        mediaRecorder.release()
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,7 +139,6 @@ class HomeFragment : Fragment() {
         val currentUser = mAuth.currentUser
         myfms = MyFirebaseMessagingService()
         bundle = Bundle()
-
         if(currentUser?.getIdToken(false)?.result?.signInProvider == "google.com")
         {
             binding.tvFullnameHome.text = currentUser.displayName
@@ -114,7 +150,11 @@ class HomeFragment : Fragment() {
             val name = email?.substring(0, indx!!)
             binding.tvFullnameHome.text = name
         }
-
+        binding.btnPanic.setMainMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24, R.drawable.ic_outline_cancel_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
         getPhoneNumber()
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
@@ -125,70 +165,68 @@ class HomeFragment : Fragment() {
                         currlocation = location
                         latLng  = LatLng(currlocation.latitude,currlocation.longitude)
 
-                        binding.btnPanic.setMainMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24, R.drawable.ic_outline_cancel_24)
-                            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
-                            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
-                            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
-                            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
-                            .setOnMenuSelectedListener {
-                                /*ini kalo data uid & token yg kita kirim gak sama kaya yg ada di firestore,
-                                data lat longnya gak akan kekirim*/
-                                val name = tv_fullname_home.text.toString()
-                                val uid = mAuth.currentUser?.uid
-                                val long =latLng.longitude
-                                val lat  = latLng.latitude
-                                val token = getDeviceRegistrationToken()
-                                var kejahatan = ""
-                                val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                                val message = "$name sedang dalam bahaya di http://maps.google.com/?q=$lat,$long pada $currentDateTime ."
+                        binding.btnPanic.setOnMenuSelectedListener {
+                            val name = tv_fullname_home.text.toString()
+                            val uid = mAuth.currentUser?.uid
+                            val long =latLng.longitude
+                            val lat  = latLng.latitude
+                            val token = getDeviceRegistrationToken()
+                            var kejahatan = ""
+                            val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            val message = "$name sedang dalam bahaya di http://maps.google.com/?q=$lat,$long pada $currentDateTime ."
 
-                                when(it) {
-                                    0 -> {
-                                        kejahatan = "Kejahatan 1"
-                                    }
-                                    1 -> {
-                                        kejahatan = "Kejahatan 2"
-                                    }
-                                    2 -> {
-                                        kejahatan = "Kejahatan 3"
-                                    }
-                                    3 -> {
-                                        kejahatan = "Kejahatan 4"
-                                    }
-
+                            when(it) {
+                                0 -> {
+                                    kejahatan = "Kejahatan 1"
                                 }
-                                val client = AsyncHttpClient()
-                                val url = "http://159.65.4.250:3000/api/ping/v1/ping"
-                                val params = RequestParams()
-                                params.put("_id", uid)
-                                params.put("kejahatan", kejahatan)
-                                params.put("long", long)
-                                params.put("lat", lat)
-                                params.put("deviceRegistrationToken", token)
-                                client.post(url, params ,object : AsyncHttpResponseHandler() {
-                                    override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
-                                        Toast.makeText(context, "MANTAP SUKSES PING!", Toast.LENGTH_SHORT).show()
-                                    }
-
-                                    override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
-                                        Toast.makeText(context, "GAGAL PING!!!", Toast.LENGTH_SHORT).show()
-                                    }
-                                })
-                                pingList.add(
-                                    PingData(kejahatan, lat.toString(), long.toString(), currentDateTime)
-                                )
-
-                                //untuk cek isi data yg dikirim ke server apa aja
-                                Toast.makeText(context, uid, Toast.LENGTH_SHORT).show()
-                                Toast.makeText(context, kejahatan, Toast.LENGTH_SHORT).show()
-                                Toast.makeText(context, long.toString(), Toast.LENGTH_SHORT).show()
-                                Toast.makeText(context, lat.toString(), Toast.LENGTH_SHORT).show()
-                                Toast.makeText(context, token, Toast.LENGTH_SHORT).show()
-                                if (checkPermission(Manifest.permission.SEND_SMS)) {
-                                    sendSMS(phone, message)
+                                1 -> {
+                                    kejahatan = "Kejahatan 2"
+                                }
+                                2 -> {
+                                    kejahatan = "Kejahatan 3"
+                                }
+                                3 -> {
+                                    kejahatan = "Kejahatan 4"
                                 }
 
                             }
+                            val client = AsyncHttpClient()
+                            val url = "http://159.65.4.250:3000/api/ping/v1/ping"
+                            val params = RequestParams()
+                            params.put("_id", uid)
+                            params.put("kejahatan", kejahatan)
+                            params.put("long", long)
+                            params.put("lat", lat)
+                            params.put("deviceRegistrationToken", token)
+                            client.post(url, params ,object : AsyncHttpResponseHandler() {
+                                override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                                    Toast.makeText(context, "MANTAP SUKSES PING!", Toast.LENGTH_SHORT).show()
+                                }
+
+                                override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
+                                    Toast.makeText(context, "GAGAL PING!!!", Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                            pingList.add(
+                                PingData(kejahatan, lat.toString(), long.toString(), currentDateTime)
+                            )
+
+                            //untuk cek isi data yg dikirim ke server apa aja
+                            Toast.makeText(context, uid, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, kejahatan, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, long.toString(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, lat.toString(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, token, Toast.LENGTH_SHORT).show()
+                            if (checkSMSPermission(Manifest.permission.SEND_SMS)) {
+                                sendSMS(phone, message)
+                            }
+                            if (checkRecordPermission(Manifest.permission.RECORD_AUDIO)) {
+                                record()
+                                Handler().postDelayed({
+                                    stopRecord()
+                                }, 5000)
+                            }
+                        }
                     }
 
                 }

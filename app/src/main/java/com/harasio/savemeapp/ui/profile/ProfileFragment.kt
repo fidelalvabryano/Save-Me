@@ -59,7 +59,7 @@ class ProfileFragment : Fragment() {
                     val detAlamat = dataObject.getString("alamat")
                     val detKota = dataObject.getString("kota")
                     val detProvinsi = dataObject.getString("provinsi")
-                    val detZipcode = dataObject.getString("zipcode")
+                    val detNoDarurat = dataObject.getString("zipcode")
 
                     binding.txtDetFullname.text = detFullname
                     binding.txtDetEmail.text = detEmail
@@ -68,7 +68,7 @@ class ProfileFragment : Fragment() {
                     binding.txtDetAlamat.text = detAlamat
                     binding.txtDetKota.text = detKota
                     binding.txtDetProvinsi.text = detProvinsi
-                    binding.txtDetZipCode.text = detZipcode
+                    binding.txtDetNoDarurat.text = detNoDarurat
 
                 } catch (e: Exception) {
                     Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()

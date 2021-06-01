@@ -49,6 +49,8 @@ class RegisterActivity : AppCompatActivity() {
 
         btn_register.setOnClickListener{
             signUpUser()
+            val intent = Intent(this, SignInActivity::class.java)
+            startActivity(intent)
         }
     }
 

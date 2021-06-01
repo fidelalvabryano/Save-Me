@@ -54,9 +54,9 @@ class SignInActivity : AppCompatActivity() {
         //Firebase Auth instance
         auth = FirebaseAuth.getInstance()
 
-        btn_sign_in_google.setOnClickListener {
+        /*btn_sign_in_google.setOnClickListener {
             signInGoogle()
-        }
+        }*/
         btn_sign_in.setOnClickListener(){
             doLogin()
         }
