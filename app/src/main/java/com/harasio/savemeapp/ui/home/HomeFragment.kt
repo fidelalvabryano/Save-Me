@@ -151,11 +151,7 @@ class HomeFragment : Fragment() {
             val name = email?.substring(0, indx!!)
             binding.tvFullnameHome.text = name
         }
-        binding.btnPanic.setMainMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24, R.drawable.ic_outline_cancel_24)
-            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
-            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
-            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
-            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24)
+
         getPhoneNumber()
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
@@ -166,7 +162,7 @@ class HomeFragment : Fragment() {
                         currlocation = location
                         latLng  = LatLng(currlocation.latitude,currlocation.longitude)
 
-                        binding.btnPanic.setOnMenuSelectedListener {
+                        binding.btnPanic.setOnClickListener {
                             val name = tv_fullname_home.text.toString()
                             val uid = mAuth.currentUser?.uid
                             val long =latLng.longitude
@@ -176,21 +172,7 @@ class HomeFragment : Fragment() {
                             val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                             val message = "$name sedang dalam bahaya di http://maps.google.com/?q=$lat,$long pada $currentDateTime ."
 
-                            when(it) {
-                                0 -> {
-                                    kejahatan = "Kejahatan 1"
-                                }
-                                1 -> {
-                                    kejahatan = "Kejahatan 2"
-                                }
-                                2 -> {
-                                    kejahatan = "Kejahatan 3"
-                                }
-                                3 -> {
-                                    kejahatan = "Kejahatan 4"
-                                }
 
-                            }
                             val client = AsyncHttpClient()
                             val url = "http://159.65.4.250:3000/api/ping/v1/ping"
                             val params = RequestParams()
