@@ -131,13 +131,13 @@
             app:layout_constraintTop_toBottomOf="@+id/et_kota" />
 
         <EditText
-            android:id="@+id/et_zipcode"
+            android:id="@+id/et_nomorDarurat"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:ems="10"
-            android:hint="Nomor Darurat"
+            android:hint="@string/nomor_darurat"
             android:background="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -152,7 +152,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_zipcode"
+            app:layout_constraintTop_toBottomOf="@+id/et_nomorDarurat"
             tools:ignore="MissingConstraints" />
 
         <TextView

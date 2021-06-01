@@ -102,6 +102,7 @@ class HomeFragment : Fragment() {
                 activity?.finish()
             }
         }
+
     }
 
     private fun sendSMS(phone: String, message: String) {

@@ -18,18 +18,22 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.clustering.ClusterManager
+import com.harasio.savemeapp.MyItem
 import com.harasio.savemeapp.databinding.FragmentLocationBinding
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class LocationFragment : Fragment(), OnMapReadyCallback {
-
+    private lateinit var clusterManager: ClusterManager<MyItem>
     private var _binding: FragmentLocationBinding? = null
     private val binding get() = _binding!!
-    private val LOCATION_PERMISSION_REQUEST = 1
     private lateinit var googleMap: GoogleMap
-    private lateinit var currlocation : Location
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLocationBinding.inflate(inflater, container, false)
@@ -45,63 +49,9 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         }
 
         binding.mapView.getMapAsync(this)
-        currlocation = Location("dummyprovider")
-        fusedLocationProviderClient = activity?.let {
-            LocationServices.getFusedLocationProviderClient(it)
-        }!!
         return root
     }
 
-    private fun getLocationAccess() {
-        if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
-            googleMap.isMyLocationEnabled = true
-            googleMap.uiSettings.isMyLocationButtonEnabled
-            fusedLocationProviderClient.lastLocation
-                .addOnSuccessListener { location :Location ->
-                    currlocation = location
-                    val latLng  = LatLng(currlocation.latitude,currlocation.longitude)
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16F))
-
-                }
-        }
-        else
-            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST) }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST) {
-            if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
-                if (context?.let {
-                        ActivityCompat.checkSelfPermission(
-                            it,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        )
-                    } != PackageManager.PERMISSION_GRANTED && context?.let {
-                        ActivityCompat.checkSelfPermission(
-                            it,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        )
-                    } != PackageManager.PERMISSION_GRANTED
-                ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return
-                }
-                googleMap.isMyLocationEnabled = true
-                googleMap.uiSettings.isMyLocationButtonEnabled
-            }
-            else {
-                Toast.makeText(context, "User has not granted location access permission", Toast.LENGTH_LONG).show()
-                activity?.finish()
-            }
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -119,7 +69,41 @@ class LocationFragment : Fragment(), OnMapReadyCallback {
         map.let{
             googleMap = it
         }
-        getLocationAccess()
 
+        val latU = 34.0897
+        val lngU = -118.2561
+        val userLocation = LatLng(latU, lngU)
+        map.addMarker(
+            MarkerOptions()
+                .position(userLocation)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+        )
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latU, lngU), 10f))
+
+        clusterManager = ClusterManager(context, map)
+
+        map.setOnCameraIdleListener(clusterManager)
+        map.setOnMarkerClickListener(clusterManager)
+
+        addItems()
     }
+
+    private fun addItems() {
+
+        val lat = ArrayList<Double>()
+        lat.addAll(Arrays.asList(34.1773,34.1939,34.2084,34.17,34.2776,34.0474,33.977,34.0924,34.1247,34.2011,34.1939,34.1921,34.2011,34.2084,34.1749,34.2048,34.203,34.2102,34.1417,34.2085,34.1807,34.1807,34.1807,34.1957,34.192,34.1543,34.2012,34.1686,34.2176,34.1888,34.2139,34.201,34.1958,34.1775,34.183,34.1595,34.207,34.1951,34.1745,34.1615,34.1727,34.201,34.1939,34.1903,34.2067,34.2208,34.2084,34.2012,34.1632,34.2048,34.1681,34.2012,34.1922,34.1809,34.1921,34.2011,34.1939,34.1903,34.1683,34.203,34.1802,34.1939,34.157,34.1448,34.2175,34.2175,34.2157,34.1939,34.1921,34.1478,34.2022,34.1672,34.2139,34.1977,34.212,34.2012,34.1667,34.2105,34.2139,34.201,34.1776,34.1783,34.1667,34.2139,34.2093,34.2067,34.2121,34.2102,34.1975,34.2084,34.2029,34.1774,34.1774,34.2011,34.1749,34.203,34.1975,34.2012,34.1636,34.2165,34.1632,34.1902,34.1903,34.1722,34.2067,34.1411,34.2022,34.1609,34.212,34.1792,34.203,34.1939,34.1939,34.1939,34.1593,34.2012,34.1377,34.1921,34.2156,34.1365,34.1559,34.1658,34.2048,34.2157,34.212,34.1905,34.1939,34.1723,34.1707,34.2067,34.201,34.1903,34.1558,34.2085,34.1783,34.1866,34.1531,34.1609,34.2102,34.1724,34.1866,34.1636,34.1939,34.2011,34.1723,34.203,34.2012,34.2011,34.1917,34.1939,34.2209,34.2029,34.2066,34.2139,34.1868,34.1756,34.2076,34.2048,34.1903,34.1939,34.1867,34.2011,34.2175,34.1767,34.1921,34.1903,34.1813,34.1839,34.1957,34.1802,34.1866,34.1746,34.1995,34.2065,34.1688,34.2084,34.2085,34.1903,34.1957,34.1578,34.1922,34.2066,34.2085,34.1635,34.1771,34.1939,34.1723,34.1658,34.172,34.1691,34.2084,34.2039,34.203,34.1911,34.2048,34.1667,34.2011,34.1552,34.203,34.1823,34.1546,34.1562,34.1975,34.1691,34.1645,34.1586,34.1567,34.1976,34.1939,34.2012,34.2084,34.2012,34.1672,34.1948,34.1866,34.1866,34.1819,34.2012,34.2139,34.2012,34.1749,34.1939,34.1939,34.162,34.1691,34.203,34.2103,34.2084,34.163,34.1921,34.1443,34.2156,34.2157,34.1957,34.1902,34.2157,34.196,34.2179,34.201,34.2029,34.1227,34.1374,34.1054,34.1002,34.0981,34.0911,34.1271,34.0881,34.1335,34.1176,34.1178,34.1078,34.0958,34.1128,34.1054,34.1156,34.133,34.0874,34.1134,34.1328,34.1152,34.0842,34.1186,34.1054,34.1247,34.141,34.0913,34.0958,34.097,34.1139,34.0935,34.1082,34.089,34.1392,34.1106,34.1018,34.1162,34.1097,34.1221,34.1207,34.1035,34.1207,34.1207,34.1085,34.1169,34.0907,34.1247,34.1368,34.1179,34.1552,34.1179,34.1169,34.0806,34.0806,34.0725,34.1228,34.1054,34.0813,34.1054))
+        val lng = ArrayList<Double>()
+        lng.addAll(Arrays.asList(-118.5988,-118.4749,-118.5535,-118.3703,-118.4361,-118.2496,-118.2937,-118.2752,-118.1976,-118.5208,-118.4793,-118.4793,-118.5448,-118.5579,-118.5308,-118.5524,-118.5348,-118.5535,-118.486,-118.4837,-118.536,-118.536,-118.536,-118.5415,-118.5596,-118.4691,-118.4771,-118.5203,-118.5343,-118.4837,-118.5361,-118.5513,-118.4946,-118.536,-118.5297,-118.5163,-118.5284,-118.511,-118.5384,-118.5142,-118.5535,-118.5229,-118.5055,-118.5335,-118.4739,-118.5317,-118.5317,-118.4793,-118.534,-118.523,-118.5387,-118.5601,-118.556,-118.5585,-118.5284,-118.5448,-118.547,-118.5317,-118.5296,-118.5011,-118.5273,-118.5546,-118.488,-118.4732,-118.5448,-118.5492,-118.5011,-118.5273,-118.5335,-118.5309,-118.4837,-118.5272,-118.5361,-118.5404,-118.5361,-118.5011,-118.5308,-118.5032,-118.5295,-118.5579,-118.5535,-118.523,-118.5308,-118.5295,-118.523,-118.4749,-118.5225,-118.5381,-118.5131,-118.5186,-118.5502,-118.5387,-118.5387,-118.5448,-118.5308,-118.4859,-118.5317,-118.5601,-118.522,-118.5546,-118.4975,-118.5448,-118.5317,-118.5012,-118.4749,-118.5622,-118.4815,-118.5098,-118.5623,-118.5591,-118.5219,-118.547,-118.4836,-118.4836,-118.5011,-118.5055,-118.5604,-118.5535,-118.556,-118.5034,-118.5205,-118.5375,-118.4782,-118.5361,-118.5374,-118.5579,-118.547,-118.5185,-118.5641,-118.4749,-118.5557,-118.5317,-118.4697,-118.4771,-118.5134,-118.5516,-118.5426,-118.5098,-118.5317,-118.5308,-118.4992,-118.522,-118.4815,-118.547,-118.5163,-118.4815,-118.5122,-118.5448,-118.5426,-118.5535,-118.4966,-118.5557,-118.4804,-118.5295,-118.5219,-118.5167,-118.5142,-118.4968,-118.4836,-118.4902,-118.4948,-118.547,-118.5361,-118.5188,-118.5535,-118.5317,-118.56,-118.5404,-118.536,-118.5462,-118.5448,-118.5229,-118.5555,-118.5284,-118.543,-118.5273,-118.4749,-118.5308,-118.5373,-118.4749,-118.536,-118.5241,-118.4771,-118.5165,-118.5447,-118.5244,-118.5123,-118.5375,-118.5244,-118.5523,-118.536,-118.4837,-118.5535,-118.5011,-118.5197,-118.5308,-118.536,-118.4749,-118.5361,-118.5221,-118.5409,-118.512,-118.5273,-118.5512,-118.5244,-118.4901,-118.4858,-118.4749,-118.5011,-118.4793,-118.5298,-118.5374,-118.5466,-118.547,-118.5011,-118.5011,-118.545,-118.4771,-118.5361,-118.4793,-118.5515,-118.5055,-118.5535,-118.5166,-118.5535,-118.4749,-118.5174,-118.5579,-118.5302,-118.5535,-118.5614,-118.5579,-118.5345,-118.4749,-118.5469,-118.5109,-118.5284,-118.5334,-118.5535,-118.5607,-118.2233,-118.2941,-118.2918,-118.2961,-118.2995,-118.2619,-118.2321,-118.212,-118.2158,-118.2116,-118.2488,-118.2024,-118.2806,-118.1924,-118.2889,-118.174,-118.2031,-118.2177,-118.2016,-118.1981,-118.1991,-118.2539,-118.2404,-118.283,-118.1896,-118.1938,-118.2136,-118.2806,-118.2918,-118.1886,-118.2866,-118.1956,-118.2749,-118.2126,-118.199,-118.2804,-118.2627,-118.1926,-118.21,-118.1964,-118.2545,-118.1964,-118.1964,-118.2011,-118.2397,-118.2121,-118.1896,-118.2135,-118.2378,-118.3109,-118.2378,-118.2397,-118.233,-118.233,-118.2459,-118.1934,-118.2874,-118.2565,-118.2874))
+
+
+
+
+        for (i in 0..298) {
+            val offsetItem =
+                MyItem(lat[i], lng[i], "Kejahatan $i", "Ini kejahatan $i")
+            clusterManager.addItem(offsetItem)
+        }
+    }
+
+
 }

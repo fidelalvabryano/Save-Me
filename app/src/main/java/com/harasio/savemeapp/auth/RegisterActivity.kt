@@ -131,9 +131,9 @@ class RegisterActivity : AppCompatActivity() {
             et_provinsi.requestFocus()
             return false
         }
-        else if (et_zipcode.text.toString().isEmpty()) {
-            et_zipcode.error = "Zip Code must be filled"
-            et_zipcode.requestFocus()
+        else if (et_nomorDarurat.text.toString().isEmpty()) {
+            et_nomorDarurat.error = "Nomor darurat must be filled"
+            et_nomorDarurat.requestFocus()
             return false
         } else {
             return true
@@ -150,7 +150,7 @@ class RegisterActivity : AppCompatActivity() {
         val alamat = et_alamat.text.toString()
         val kota = et_kota.text.toString()
         val provinsi = et_provinsi.text.toString()
-        val zipcode = et_zipcode.text.toString()
+        val nomordarurat = et_nomorDarurat.text.toString()
         val token = getDeviceRegistrationToken()
 
         val client = AsyncHttpClient()
@@ -165,7 +165,7 @@ class RegisterActivity : AppCompatActivity() {
         params.put("alamat", alamat)
         params.put("kota", kota)
         params.put("provinsi", provinsi)
-        params.put("zipcode", zipcode)
+        params.put("zipcode", nomordarurat)
         params.put("deviceRegistrationToken", token)
         client.post(url, params ,object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
