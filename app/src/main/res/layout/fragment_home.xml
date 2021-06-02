@@ -4,37 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.home.HomeFragment"
+    android:background="@color/darker_grey">
 
-    <!--<com.hitomi.cmlibrary.CircleMenu
+    <com.hitomi.cmlibrary.CircleMenu
         android:id="@+id/btn_panic"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:paddingTop="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_fullname_home"
-        app:layout_constraintVertical_bias="0.505" />-->
-
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/btn_panic"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:background="@drawable/ic_baseline_panic_24"
-        android:paddingTop="50dp"
+        android:paddingTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_fullname_home"
-        app:layout_constraintVertical_bias="0.224" />
+        app:layout_constraintVertical_bias="0.092" />
 
     <Button
         android:id="@+id/sign_out_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="188dp"
+        android:layout_marginTop="56dp"
         android:text="@string/sign_out"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,11 +33,11 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="92dp"
         android:text="@string/welcome"
+        android:textColor="@color/white"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/full_name"
+        android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

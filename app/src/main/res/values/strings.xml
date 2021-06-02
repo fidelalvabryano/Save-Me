@@ -33,4 +33,5 @@
     <string name="zipcode">Zipcode</string>
     <string name="update">Update</string>
     <string name="nomor_darurat">Nomor Darurat</string>
+    <string name="gender_m_f">Gender (M/F)</string>
 </resources>

@@ -11,16 +11,17 @@
         android:layout_height="wrap_content"
         tools:context=".auth.SignInActivity">
 
-        <ImageView
-            android:id="@+id/welcome_imageView"
+        <TextView
+            android:id="@+id/txtSignIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="108dp"
+            android:layout_marginTop="60dp"
+            android:text="@string/sign_in"
+            android:textSize="30sp"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_welcome"
-            android:contentDescription="@string/Welcome" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <EditText
             android:id="@+id/et_email_login"
@@ -62,7 +63,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.307"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/welcome_imageView"
+            app:layout_constraintTop_toBottomOf="@+id/txtSignIn"
             tools:ignore="MissingConstraints" />
 
         <TextView

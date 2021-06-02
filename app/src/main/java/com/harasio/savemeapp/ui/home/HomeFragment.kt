@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.media.MediaRecorder
+import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -25,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.harasio.savemeapp.MyFirebaseMessagingService
 import com.harasio.savemeapp.PingData
+import com.harasio.savemeapp.R
 import com.harasio.savemeapp.auth.SignInActivity
 import com.harasio.savemeapp.databinding.FragmentHomeBinding
 import com.harasio.savemeapp.ml.Model
@@ -63,6 +66,9 @@ class HomeFragment : Fragment() {
     private lateinit var phone: String
     private lateinit var mediaRecorder: MediaRecorder
     private var fileName = "recorded.3gp"
+    private lateinit var sp: SoundPool
+    private var soundId: Int = 0
+    private var spLoaded = false
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -138,6 +144,23 @@ class HomeFragment : Fragment() {
         val currentUser = mAuth.currentUser
         myfms = MyFirebaseMessagingService()
         bundle = Bundle()
+
+        sp = SoundPool.Builder()
+            .setMaxStreams(10)
+            .build()
+
+        sp.setOnLoadCompleteListener { soundPool, sampleId, status ->
+            if (status == 0) {
+                spLoaded = true
+            } else {
+                Toast.makeText(context, "Gagal load", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        soundId = sp.load(context, R.raw.alarm, 1)
+
+
+
         if(currentUser?.getIdToken(false)?.result?.signInProvider == "google.com")
         {
             binding.tvFullnameHome.text = currentUser.displayName
@@ -149,7 +172,9 @@ class HomeFragment : Fragment() {
             val name = email?.substring(0, indx!!)
             binding.tvFullnameHome.text = name
         }
-
+        binding.btnPanic.setMainMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24, R.drawable.ic_outline_cancel_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_alarm_24)
+            .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_record_24)
         getPhoneNumber()
 
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
@@ -160,7 +185,7 @@ class HomeFragment : Fragment() {
                         currlocation = location
                         latLng  = LatLng(currlocation.latitude,currlocation.longitude)
 
-                        binding.btnPanic.setOnClickListener {
+                        binding.btnPanic.setOnMenuSelectedListener() {
                             val name = binding.tvFullnameHome.text.toString()
                             val uid = mAuth.currentUser?.uid
                             val long =latLng.longitude
@@ -201,12 +226,22 @@ class HomeFragment : Fragment() {
                             if (checkSMSPermission(Manifest.permission.SEND_SMS)) {
                                 sendSMS(phone, message)
                             }
-                            if (checkRecordPermission(Manifest.permission.RECORD_AUDIO)) {
-                                record()
-                                Handler().postDelayed({
-                                    stopRecord()
-                                }, 5000)
+                            when(it) {
+                                0 -> {
+                                    if (checkRecordPermission(Manifest.permission.RECORD_AUDIO)) {
+                                        record()
+                                        Handler().postDelayed({
+                                            stopRecord()
+                                        }, 5000)
+                                    }
+                                }
+                                1 -> {
+                                    if (spLoaded) {
+                                        sp.play(soundId, 1f, 1f, 0, 5, 1f)
+                                    }
+                                }
                             }
+
 
 
                             var byteBuffer : ByteBuffer = ByteBuffer.allocateDirect(7*4)

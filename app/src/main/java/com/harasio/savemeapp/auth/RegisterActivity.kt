@@ -183,4 +183,10 @@ class RegisterActivity : AppCompatActivity() {
         Toast.makeText(this@RegisterActivity,myfms.getToken(applicationContext),Toast.LENGTH_LONG).show()
         return myfms.getToken(applicationContext)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivity(intent)
+    }
 }
