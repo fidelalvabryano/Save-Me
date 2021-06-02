@@ -23,9 +23,4 @@
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 
-    <fragment
-        android:id="@+id/navigation_history"
-        android:name="com.harasio.savemeapp.ui.history.HistoryFragment"
-        android:label="@string/title_history"
-        tools:layout="@layout/fragment_history" />
 </navigation>
