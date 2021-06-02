@@ -4,10 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Location
 import android.media.MediaRecorder
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
 import android.telephony.SmsManager
 import android.view.LayoutInflater
 import android.view.View
@@ -24,16 +25,18 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.harasio.savemeapp.MyFirebaseMessagingService
 import com.harasio.savemeapp.PingData
-import com.harasio.savemeapp.R
 import com.harasio.savemeapp.auth.SignInActivity
 import com.harasio.savemeapp.databinding.FragmentHomeBinding
+import com.harasio.savemeapp.ml.Model
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
-import kotlinx.android.synthetic.main.fragment_home.*
 import org.json.JSONObject
+import org.tensorflow.lite.DataType
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.IOException
+import java.nio.ByteBuffer
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -45,6 +48,12 @@ class HomeFragment : Fragment() {
     private val LOCATION_PERMISSION_REQUEST = 1
     private val SMS_PERMISSION_REQUEST = 1
     private val RECORD_PERMISSION_REQUEST = 1
+    var PERMISSION_ALL = 1
+    var PERMISSIONS = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.RECORD_AUDIO
+    )
     private lateinit var currlocation : Location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val binding get() = _binding!!
@@ -64,22 +73,11 @@ class HomeFragment : Fragment() {
         fusedLocationProviderClient = activity?.let {
             LocationServices.getFusedLocationProviderClient(it)
         }!!
-
-        if (checkSMSPermission(Manifest.permission.SEND_SMS)) {
-        } else {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.SEND_SMS), SMS_PERMISSION_REQUEST )
-        }
-
-        if (checkRecordPermission(Manifest.permission.RECORD_AUDIO)) {
-        } else {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.RECORD_AUDIO), RECORD_PERMISSION_REQUEST)
-        }
+        ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, PERMISSION_ALL);
         return root
     }
+
+
 
     private fun checkRecordPermission(permission: String) : Boolean {
         val check = context?.let { ContextCompat.checkSelfPermission(it, permission) }
@@ -163,7 +161,7 @@ class HomeFragment : Fragment() {
                         latLng  = LatLng(currlocation.latitude,currlocation.longitude)
 
                         binding.btnPanic.setOnClickListener {
-                            val name = tv_fullname_home.text.toString()
+                            val name = binding.tvFullnameHome.text.toString()
                             val uid = mAuth.currentUser?.uid
                             val long =latLng.longitude
                             val lat  = latLng.latitude
@@ -209,6 +207,33 @@ class HomeFragment : Fragment() {
                                     stopRecord()
                                 }, 5000)
                             }
+
+
+                            var byteBuffer : ByteBuffer = ByteBuffer.allocateDirect(7*4)
+                            byteBuffer.putInt(2)
+                            byteBuffer.putInt(1)
+                            byteBuffer.putInt(5)
+                            byteBuffer.putInt(3)
+                            byteBuffer.putInt(4)
+                            byteBuffer.putFloat((7).toFloat())
+                            byteBuffer.putFloat((6).toFloat())
+
+                            val model = Model.newInstance(requireContext())
+
+                            val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 7), DataType.FLOAT32)
+                            inputFeature0.loadBuffer(byteBuffer)
+
+
+                            val outputs = model.process(inputFeature0)
+                            val outputFeature0 = outputs.outputFeature0AsTensorBuffer.floatArray
+                            for(i in 0..15)
+                            {
+                                Toast.makeText(context, outputFeature0[i].toString(), Toast.LENGTH_SHORT).show()
+                            }
+
+                            model.close()
+
+
                         }
                     }
 
