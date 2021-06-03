@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SaveMeApp</string>
+    <string name="app_name">Save Me</string>
     <string name="welcome">Welcome</string>
     <string name="sign_in_with_google">Sign in With Google</string>
     <string name="sign_in">Sign in</string>
