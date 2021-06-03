@@ -205,17 +205,19 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                val year = normalize((2021).toFloat(),(2010).toFloat(),(2019).toFloat())
-                val month = normalize((6).toFloat(),(1).toFloat(),(12).toFloat())
-                val day = normalize((3).toFloat(),(1).toFloat(),(31).toFloat())
-                val time = normalize((1500).toFloat(),(1).toFloat(),(2359).toFloat())
-                val age = normalize((12).toFloat(),(-6).toFloat(),(99).toFloat())
-                val gender = normalize((2).toFloat(),(0).toFloat(),(1).toFloat())
-                val PremiseCode = normalize((108).toFloat(),(0).toFloat(),(231).toFloat())
-                val StatusDescription = normalize((2).toFloat(),(0).toFloat(),(4).toFloat())
-                val MOCodes = normalize((956.0).toFloat(),(100).toFloat(),(9999).toFloat())
-                val LatN = normalize((lat).toFloat(),(33.707).toFloat(),(34.4906).toFloat())
-                val LongN = normalize((long).toFloat(),(-118.7668).toFloat(),(-118.1624).toFloat())
+                val year = normalize(2021,2010,2017)
+                val month = normalize(6,1,12)
+                val day = normalize(3,1,31)
+                val time = normalize(1500,1,2359)
+                val age = normalize(20,2,82)
+                val gender = normalize(1,0,1)
+                val PremiseCode = normalize(108,0,209)
+                val StatusDescription = normalize(2,0,3)
+                val MOCodes = normalize(956,100,2126)
+                val LatN = normalizeD(lat,33.801,34.3272)
+                val LongN = normalizeD(long,-118.6673,-118.1624)
+
+
                 val byteBuffer : ByteBuffer = ByteBuffer.allocateDirect(11*4)
                 byteBuffer.putFloat(year)
                 byteBuffer.putFloat(month)
@@ -226,8 +228,9 @@ class HomeFragment : Fragment() {
                 byteBuffer.putFloat(PremiseCode)
                 byteBuffer.putFloat(StatusDescription)
                 byteBuffer.putFloat(MOCodes)
-                byteBuffer.putFloat(LatN)
-                byteBuffer.putFloat(LongN)
+                byteBuffer.putFloat(LatN.toFloat())
+                byteBuffer.putFloat(LongN.toFloat())
+
 
 
                 val model = Model.newInstance(requireContext())
@@ -240,93 +243,96 @@ class HomeFragment : Fragment() {
                 val outputs = model.process(inputFeature0)
                 val outputFeature0 = outputs.outputFeature0AsTensorBuffer.floatArray
 
+
                 for(i in 0..15)
                 {
-                    if(outputFeature0[i].toString().equals("1.0") && i == 0)
-                    {
-                        val crime = "Letters,Lewd-Telephone calls"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-
-                    if(outputFeature0[i].toString().equals("1.0") && i == 1)
+                    if(outputFeature0[i].toString() == "1.0" && i == 0)
                     {
                         val crime = "Battery with sexual contact"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 2)
+
+                    if(outputFeature0[i].toString() == "1.0" && i == 1)
                     {
-                        val crime = "Rape,Forcible"
+                        val crime = "BEASTIALITY, CRIME AGAINST NATURE SEXUAL ASSLT WITH ANIM"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 3)
+                    if(outputFeature0[i].toString() == "1.0" && i == 2)
                     {
-                        val crime = "Child Abuse - Simple Assault"
+                        val crime = "CHILD ABANDONMENT"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 4)
+                    if(outputFeature0[i].toString() == "1.0" && i == 3)
                     {
-                        val crime = "Sex,Unlawful"
+                        val crime = "CHILD ABUSE (PHYSICAL) - AGGRAVATED ASSAULT"
+
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 5)
+                    if(outputFeature0[i].toString() == "1.0" && i == 4)
                     {
-                        val crime = "Sexual Penetration W/Foreign Object"
+                        val crime = "CHILD ABUSE (PHYSICAL) - SIMPLE ASSAULT"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 6)
+                    if(outputFeature0[i].toString() == "1.0" && i == 5)
                     {
-                        val crime = "Oral Copulation"
+                        val crime = "HUMAN TRAFFICKING - COMMERCIAL SEX ACTS"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 7)
+                    if(outputFeature0[i].toString() == "1.0" && i == 6)
                     {
-                        val crime = "Child Abuse - Aggravated Assault"
+                        val crime = "INCEST (SEXUAL ACTS BETWEEN BLOOD RELATIVES)"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 8)
+                    if(outputFeature0[i].toString() == "1.0" && i == 7)
                     {
-                        val crime = "Sodomy"
+                        val crime = "Letters,Lewd-Telephone calls"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 9)
+                    if(outputFeature0[i].toString() == "1.0" && i == 8)
                     {
                         val crime = "Lewd Conduct"
+
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 10)
+                    if(outputFeature0[i].toString() == "1.0" && i == 9)
+                    {
+                        val crime = "LEWD/LASCIVIOUS ACTS WITH CHILD"
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 10)
+                    {
+                        val crime = "ORAL COPULATION"
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 11)
                     {
                         val crime = "Rape, Attempted"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 11)
+                    if(outputFeature0[i].toString() == "1.0" && i == 12)
                     {
-                        val crime = "Human Trafficking"
+                        val crime = "Rape,Forcible"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 12)
+                    if(outputFeature0[i].toString() == "1.0" && i == 13)
                     {
-                        val crime = "Lewd Acts with child"
+                        val crime = "SEX,UNLAWFUL(INC MUTUAL CONSENT, PENETRATION W/ FRGN OBJ"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 13)
+                    if(outputFeature0[i].toString() == "1.0" && i == 14)
                     {
-                        val crime = "Child Abandonment"
+                        val crime = "SEXUAL PENETRATION W/FOREIGN OBJECT"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 14)
+                    if(outputFeature0[i].toString() == "1.0" && i == 15)
                     {
-                        val crime = "Beastiality"
+                        val crime = "SODOMY/SEXUAL CONTACT B/W PENIS OF ONE PERS TO ANUS OTH"
                         Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
                     }
-                    if(outputFeature0[i].toString().equals("1.0") && i == 15)
-                    {
-                        val crime = "Incest"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-
+                  
                 }
-                model.close()
 
+                model.close()
 
 
             }
@@ -381,7 +387,19 @@ class HomeFragment : Fragment() {
         return context?.let { myfms.getToken(it) }
     }
 
-    fun normalize(value: Float, min: Float, max: Float): Float {
-        return  (value - min) / (max - min)
+    fun normalize(value: Int, min: Int, max: Int): Float {
+       var result = (value - min) / (max - min)
+
+        if(result >= 1.0)
+        {
+            result = 0
+            return result.toFloat()
+        }
+        else return result.toFloat()
+    }
+
+    fun normalizeD(value: Double, min: Double, max: Double): Double {
+        var result = (value - min) / (max - min)
+        return result
     }
 }
