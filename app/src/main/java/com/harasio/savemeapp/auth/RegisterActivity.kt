@@ -49,6 +49,8 @@ class RegisterActivity : AppCompatActivity() {
 
         btn_register.setOnClickListener{
             signUpUser()
+            Toast.makeText(this, "Email confirmation sent to your email address", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please verify your email address before login", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
         }
