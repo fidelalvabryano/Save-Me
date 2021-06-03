@@ -34,4 +34,7 @@
     <string name="update">Update</string>
     <string name="nomor_darurat">Nomor Darurat</string>
     <string name="gender_m_f">Gender (M/F)</string>
+    <string name="address">Address</string>
+    <string name="emergency_number">Emergency Number</string>
+    <string name="age">Age</string>
 </resources>

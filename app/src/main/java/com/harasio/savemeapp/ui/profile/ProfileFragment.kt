@@ -65,9 +65,9 @@ class ProfileFragment : Fragment() {
                     binding.txtDetEmail.text = detEmail
                     binding.txtDetUmur.text = detUmur
                     binding.txtDetGender.text = detGender
-                    binding.txtDetAlamat.text = detAlamat
-                    binding.txtDetKota.text = detKota
-                    binding.txtDetProvinsi.text = detProvinsi
+                    binding.txtDetAlamat.text = "$detAlamat, $detKota, $detProvinsi"
+                    /*binding.txtDetKota.text = detKota
+                    binding.txtDetProvinsi.text = detProvinsi*/
                     binding.txtDetNoDarurat.text = detNoDarurat
 
                 } catch (e: Exception) {

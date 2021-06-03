@@ -228,16 +228,16 @@ class HomeFragment : Fragment() {
                             }
                             when(it) {
                                 0 -> {
+                                    if (spLoaded) {
+                                        sp.play(soundId, 1f, 1f, 0, 5, 1f)
+                                    }
+                                }
+                                1 -> {
                                     if (checkRecordPermission(Manifest.permission.RECORD_AUDIO)) {
                                         record()
                                         Handler().postDelayed({
                                             stopRecord()
                                         }, 5000)
-                                    }
-                                }
-                                1 -> {
-                                    if (spLoaded) {
-                                        sp.play(soundId, 1f, 1f, 0, 5, 1f)
                                     }
                                 }
                             }
