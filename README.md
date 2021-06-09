@@ -1,6 +1,6 @@
 **Save Me**
 
-Save Me is an android application which will help you to ask for help when you are in a dangerous situation.
+Save Me is an android application that will make us easier to ask for help when we are in a dangerous situation.
 
 **Library used:**
 - Firebase
