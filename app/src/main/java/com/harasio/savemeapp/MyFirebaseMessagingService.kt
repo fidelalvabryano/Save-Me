@@ -19,8 +19,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
 
-        fun getToken(context: Context): String? {
-            return context.getSharedPreferences("_", MODE_PRIVATE).getString("fcm_token", "empty")
-        }
+    fun getToken(context: Context): String? {
+        return context.getSharedPreferences("_", MODE_PRIVATE).getString("fcm_token", "empty")
+    }
 
 }

@@ -30,8 +30,7 @@ class SignInActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var database: FirebaseDatabase
-    private lateinit var myRef: DatabaseReference
+
     private lateinit var myfms: MyFirebaseMessagingService
     private lateinit var bundle: Bundle
 
@@ -41,22 +40,18 @@ class SignInActivity : AppCompatActivity() {
         supportActionBar?.hide()
         bundle = Bundle()
         myfms = MyFirebaseMessagingService()
-        database = FirebaseDatabase.getInstance("https://b21-cap0083-default-rtdb.asia-southeast1.firebasedatabase.app/")
-        myRef = database.getReference("users")
+
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         //Firebase Auth instance
         auth = FirebaseAuth.getInstance()
 
-        /*btn_sign_in_google.setOnClickListener {
-            signInGoogle()
-        }*/
         btn_sign_in.setOnClickListener(){
             doLogin()
         }
@@ -87,21 +82,16 @@ class SignInActivity : AppCompatActivity() {
         }
 
         auth.signInWithEmailAndPassword(et_email_login.text.toString(), et_password_login.text.toString())
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        val user = auth.currentUser
-                        updateUI(user)
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        updateUI(null)
-                    }
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    updateUI(null)
                 }
-    }
-
-    private fun signInGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+            }
     }
 
     private fun register() {
@@ -116,9 +106,6 @@ class SignInActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        //updateUI(currentUser)
     }
 
     private fun updateUI(currentUser: FirebaseUser?){
@@ -129,53 +116,12 @@ class SignInActivity : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(baseContext, "Please verify your email address",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(baseContext, "Login failed.",
-                    Toast.LENGTH_SHORT).show()
+            Toast.makeText(baseContext, "Invalid email address or password",
+                Toast.LENGTH_SHORT).show()
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val exception = task.exception
-            if (task.isSuccessful) {
-                try {
-                    // Google Sign In was successful, authenticate with Firebase
-                    val account = task.getResult(ApiException::class.java)!!
-                    Log.d("SignInActivity", "firebaseAuthWithGoogle:" + account.id)
-                    firebaseAuthWithGoogle(account.idToken!!)
-                } catch (e: ApiException) {
-                    // Google Sign In failed, update UI appropriately
-                    Log.w("SignInActivity", "Google sign in failed", e)
-                }
-            } else {
-                Log.w("SignInActivity", exception.toString())
-            }
-        }
-    }
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d("SignInActivity", "signInWithCredential:success")
-                        saveData()
-                        val intent = Intent(this, BottomNavActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.d("SignInActivity", "signInWithCredential:failure")
-                    }
-                }
     }
 
     private fun saveData() {
@@ -190,18 +136,18 @@ class SignInActivity : AppCompatActivity() {
         params.put("deviceRegistrationToken", token)
         client.post(url, params ,object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
-                Toast.makeText(this@SignInActivity, "MANTAP UPDATE SUKSES!", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@SignInActivity, "MANTAP UPDATE SUKSES!", Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
-                Toast.makeText(this@SignInActivity, "UPDATE GAGAL!!!", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@SignInActivity, "UPDATE GAGAL!!!", Toast.LENGTH_SHORT).show()
             }
 
         })
     }
 
     private fun getDeviceRegistrationToken() : String? {
-        Toast.makeText(this@SignInActivity,myfms.getToken(applicationContext),Toast.LENGTH_LONG).show()
+        //Toast.makeText(this@SignInActivity,myfms.getToken(applicationContext),Toast.LENGTH_LONG).show()
         return myfms.getToken(applicationContext)
     }
 }

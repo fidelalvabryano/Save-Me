@@ -36,10 +36,10 @@ class ForgotPasswordActivity : AppCompatActivity() {
             return
         }
         auth.sendPasswordResetEmail(et_email_forgotpassword.text.toString())
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(baseContext, "Password reset sent to your email address", Toast.LENGTH_SHORT).show()
-                    }
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(baseContext, "Password reset sent to your email address", Toast.LENGTH_SHORT).show()
                 }
+            }
     }
 }

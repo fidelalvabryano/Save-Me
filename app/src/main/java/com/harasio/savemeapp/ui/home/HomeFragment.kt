@@ -21,7 +21,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.harasio.savemeapp.MyFirebaseMessagingService
-import com.harasio.savemeapp.PingData
 import com.harasio.savemeapp.R
 import com.harasio.savemeapp.auth.SignInActivity
 import com.harasio.savemeapp.databinding.FragmentHomeBinding
@@ -50,7 +49,6 @@ class HomeFragment : Fragment() {
         Manifest.permission.RECORD_AUDIO
     )
     private val binding get() = _binding!!
-    private var pingList: ArrayList<PingData> = ArrayList()
     private lateinit var bundle: Bundle
     private lateinit var smsManager: SmsManager
     private lateinit var phone: String
@@ -153,17 +151,163 @@ class HomeFragment : Fragment() {
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED) {
 
 
-
             binding.btnPanic.setOnMenuSelectedListener() {
                 val name = binding.tvFullnameHome.text.toString()
                 val uid = mAuth.currentUser?.uid
                 val lat = 34.0897
                 val long  = -118.2561
                 val token = getDeviceRegistrationToken()
-                val kejahatan = ""
+                var kejahatan = ""
                 val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 val message = "$name sedang dalam bahaya di http://maps.google.com/?q=$lat,$long pada $currentDateTime ."
 
+
+                val year = normalize(2021,2010,2017)
+                val month = normalize(6,1,12)
+                val day = normalize(9,1,31)
+                val dayOfWeek = normalize(2,0,6)
+                val quarter = normalize(2,1,4)
+                val time = normalize(1500,1,2359)
+                val age = normalize(20,2,75)
+                val gender = normalize(1,0,1)
+                val descode = normalize(6,0,19)
+                val PremiseCode = normalize(194,37,238)
+                val addresCode = normalize(9624,0,23756)
+                val LatN = normalizeD(lat,33.801,34.3272)
+                val LongN = normalizeD(long,-118.6673,-118.1624)
+
+
+                val byteBuffer : ByteBuffer = ByteBuffer.allocateDirect(13*4)
+                byteBuffer.putFloat(year)
+                byteBuffer.putFloat(month)
+                byteBuffer.putFloat(day)
+                byteBuffer.putFloat(dayOfWeek)
+                byteBuffer.putFloat(quarter)
+                byteBuffer.putFloat(time)
+                byteBuffer.putFloat(age)
+                byteBuffer.putFloat(gender)
+                byteBuffer.putFloat(descode)
+                byteBuffer.putFloat(PremiseCode)
+                byteBuffer.putFloat(addresCode)
+                byteBuffer.putFloat(LatN.toFloat())
+                byteBuffer.putFloat(LongN.toFloat())
+
+
+
+                val model = Model.newInstance(requireContext())
+
+
+                val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 13), DataType.FLOAT32)
+                inputFeature0.loadBuffer(byteBuffer)
+
+
+                val outputs = model.process(inputFeature0)
+                val outputFeature0 = outputs.outputFeature0AsTensorBuffer.floatArray
+
+
+                for(i in 0..15)
+                {
+                    if(outputFeature0[i].toString() == "1.0" && i == 0)
+                    {
+                        val crime = "Battery with sexual contact"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+
+                    if(outputFeature0[i].toString() == "1.0" && i == 1)
+                    {
+                        val crime = "BEASTIALITY, CRIME AGAINST NATURE SEXUAL ASSLT WITH ANIM"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 2)
+                    {
+                        val crime = "CHILD ABANDONMENT"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 3)
+                    {
+                        val crime = "CHILD ABUSE (PHYSICAL) - AGGRAVATED ASSAULT"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 4)
+                    {
+                        val crime = "CHILD ABUSE (PHYSICAL) - SIMPLE ASSAULT"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 5)
+                    {
+                        val crime = "HUMAN TRAFFICKING - COMMERCIAL SEX ACTS"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 6)
+                    {
+                        val crime = "INCEST (SEXUAL ACTS BETWEEN BLOOD RELATIVES)"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 7)
+                    {
+                        val crime = "Letters,Lewd-Telephone calls"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 8)
+                    {
+                        val crime = "Lewd Conduct"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 9)
+                    {
+                        val crime = "LEWD/LASCIVIOUS ACTS WITH CHILD"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 10)
+                    {
+                        val crime = "ORAL COPULATION"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 11)
+                    {
+                        val crime = "Rape, Attempted"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 12)
+                    {
+                        val crime = "Rape,Forcible"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 13)
+                    {
+                        val crime = "SEX,UNLAWFUL(INC MUTUAL CONSENT, PENETRATION W/ FRGN OBJ"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 14)
+                    {
+                        val crime = "SEXUAL PENETRATION W/FOREIGN OBJECT"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+                    if(outputFeature0[i].toString() == "1.0" && i == 15)
+                    {
+                        val crime = "SODOMY/SEXUAL CONTACT B/W PENIS OF ONE PERS TO ANUS OTH"
+                        kejahatan = crime
+                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+
+                model.close()
 
                 val client = AsyncHttpClient()
                 val url = "http://159.65.4.250:3000/api/ping/v1/ping"
@@ -175,16 +319,13 @@ class HomeFragment : Fragment() {
                 params.put("deviceRegistrationToken", token)
                 client.post(url, params ,object : AsyncHttpResponseHandler() {
                     override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
-                        Toast.makeText(context, "MANTAP SUKSES PING!", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(context, "MANTAP SUKSES PING!", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
-                        Toast.makeText(context, "GAGAL PING!!!", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(context, "GAGAL PING!!!", Toast.LENGTH_SHORT).show()
                     }
                 })
-                pingList.add(
-                    PingData(kejahatan, lat.toString(), long.toString(), currentDateTime)
-                )
 
                 if (checkSMSPermission(Manifest.permission.SEND_SMS)) {
                     sendSMS(phone, message)
@@ -205,134 +346,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                val year = normalize(2021,2010,2017)
-                val month = normalize(6,1,12)
-                val day = normalize(3,1,31)
-                val time = normalize(1500,1,2359)
-                val age = normalize(20,2,82)
-                val gender = normalize(1,0,1)
-                val PremiseCode = normalize(108,0,209)
-                val StatusDescription = normalize(2,0,3)
-                val MOCodes = normalize(956,100,2126)
-                val LatN = normalizeD(lat,33.801,34.3272)
-                val LongN = normalizeD(long,-118.6673,-118.1624)
 
-
-                val byteBuffer : ByteBuffer = ByteBuffer.allocateDirect(11*4)
-                byteBuffer.putFloat(year)
-                byteBuffer.putFloat(month)
-                byteBuffer.putFloat(day)
-                byteBuffer.putFloat(time)
-                byteBuffer.putFloat(age)
-                byteBuffer.putFloat(gender)
-                byteBuffer.putFloat(PremiseCode)
-                byteBuffer.putFloat(StatusDescription)
-                byteBuffer.putFloat(MOCodes)
-                byteBuffer.putFloat(LatN.toFloat())
-                byteBuffer.putFloat(LongN.toFloat())
-
-
-
-                val model = Model.newInstance(requireContext())
-
-
-                val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 11), DataType.FLOAT32)
-                inputFeature0.loadBuffer(byteBuffer)
-
-
-                val outputs = model.process(inputFeature0)
-                val outputFeature0 = outputs.outputFeature0AsTensorBuffer.floatArray
-
-
-                for(i in 0..15)
-                {
-                    if(outputFeature0[i].toString() == "1.0" && i == 0)
-                    {
-                        val crime = "Battery with sexual contact"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-
-                    if(outputFeature0[i].toString() == "1.0" && i == 1)
-                    {
-                        val crime = "BEASTIALITY, CRIME AGAINST NATURE SEXUAL ASSLT WITH ANIM"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 2)
-                    {
-                        val crime = "CHILD ABANDONMENT"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 3)
-                    {
-                        val crime = "CHILD ABUSE (PHYSICAL) - AGGRAVATED ASSAULT"
-
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 4)
-                    {
-                        val crime = "CHILD ABUSE (PHYSICAL) - SIMPLE ASSAULT"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 5)
-                    {
-                        val crime = "HUMAN TRAFFICKING - COMMERCIAL SEX ACTS"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 6)
-                    {
-                        val crime = "INCEST (SEXUAL ACTS BETWEEN BLOOD RELATIVES)"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 7)
-                    {
-                        val crime = "Letters,Lewd-Telephone calls"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 8)
-                    {
-                        val crime = "Lewd Conduct"
-
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 9)
-                    {
-                        val crime = "LEWD/LASCIVIOUS ACTS WITH CHILD"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 10)
-                    {
-                        val crime = "ORAL COPULATION"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 11)
-                    {
-                        val crime = "Rape, Attempted"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 12)
-                    {
-                        val crime = "Rape,Forcible"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 13)
-                    {
-                        val crime = "SEX,UNLAWFUL(INC MUTUAL CONSENT, PENETRATION W/ FRGN OBJ"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 14)
-                    {
-                        val crime = "SEXUAL PENETRATION W/FOREIGN OBJECT"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                    if(outputFeature0[i].toString() == "1.0" && i == 15)
-                    {
-                        val crime = "SODOMY/SEXUAL CONTACT B/W PENIS OF ONE PERS TO ANUS OTH"
-                        Toast.makeText(context, crime, Toast.LENGTH_SHORT).show()
-                    }
-                  
-                }
-
-                model.close()
 
 
             }
@@ -388,7 +402,7 @@ class HomeFragment : Fragment() {
     }
 
     fun normalize(value: Int, min: Int, max: Int): Float {
-       var result = (value - min) / (max - min)
+        var result = (value - min) / (max - min)
 
         if(result >= 1.0)
         {

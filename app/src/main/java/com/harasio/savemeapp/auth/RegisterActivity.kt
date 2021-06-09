@@ -3,34 +3,20 @@ package com.harasio.savemeapp.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
-import androidx.annotation.NonNull
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.harasio.savemeapp.MyFirebaseMessagingService
 import com.harasio.savemeapp.R
-import com.harasio.savemeapp.User
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
 import kotlinx.android.synthetic.main.activity_register.*
-import org.json.JSONObject
-import java.lang.Exception
-import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var database: FirebaseDatabase
-    private lateinit var myRef: DatabaseReference
     private lateinit var myfms: MyFirebaseMessagingService
 
     companion object {
@@ -42,17 +28,11 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_register)
         auth = FirebaseAuth.getInstance()
 
-        database = FirebaseDatabase.getInstance("https://b21-cap0083-default-rtdb.asia-southeast1.firebasedatabase.app/")
-        myRef = database.getReference("users")
         myfms = MyFirebaseMessagingService()
 
 
         btn_register.setOnClickListener{
             signUpUser()
-            Toast.makeText(this, "Email confirmation sent to your email address", Toast.LENGTH_SHORT).show()
-            Toast.makeText(this, "Please verify your email address before login", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, SignInActivity::class.java)
-            startActivity(intent)
         }
     }
 
@@ -63,10 +43,14 @@ class RegisterActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val user = auth.currentUser
 
-                        user!!.sendEmailVerification()
-                            .addOnCompleteListener { task ->
+                        user?.sendEmailVerification()
+                            ?.addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     saveData()
+                                    Toast.makeText(this, "Email confirmation sent to your email address", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "Please verify your email address before login", Toast.LENGTH_SHORT).show()
+                                    val intent = Intent(this, SignInActivity::class.java)
+                                    startActivity(intent)
                                 }
                             }
 
@@ -171,18 +155,18 @@ class RegisterActivity : AppCompatActivity() {
         params.put("deviceRegistrationToken", token)
         client.post(url, params ,object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
-                Toast.makeText(this@RegisterActivity, "MANTAP SUKSES!", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@RegisterActivity, "MANTAP SUKSES!", Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
-                Toast.makeText(this@RegisterActivity, "GAGAL!!!", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@RegisterActivity, "GAGAL!!!", Toast.LENGTH_SHORT).show()
             }
 
         })
     }
 
     private fun getDeviceRegistrationToken() : String? {
-        Toast.makeText(this@RegisterActivity,myfms.getToken(applicationContext),Toast.LENGTH_LONG).show()
+        //Toast.makeText(this@RegisterActivity,myfms.getToken(applicationContext),Toast.LENGTH_LONG).show()
         return myfms.getToken(applicationContext)
     }
 
