@@ -130,19 +130,11 @@ class HomeFragment : Fragment() {
 
         soundId = sp.load(context, R.raw.alarm, 1)
 
-
-
-        if(currentUser?.getIdToken(false)?.result?.signInProvider == "google.com")
-        {
-            binding.tvFullnameHome.text = currentUser.displayName
-        }
-        else
-        {
             val email = currentUser?.email
             val indx = email?.indexOf('@')
             val name = email?.substring(0, indx!!)
             binding.tvFullnameHome.text = name
-        }
+
         binding.btnPanic.setMainMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_24, R.drawable.ic_outline_cancel_24)
             .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_alarm_24)
             .addSubMenu(Color.parseColor("#FF0000"), R.drawable.ic_baseline_panic_record_24)

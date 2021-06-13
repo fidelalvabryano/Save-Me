@@ -20,16 +20,14 @@ class StartActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         val user = mAuth.currentUser
 
-        /**If user is not authenticated, send him to SignInActivity to authenticate first.
-         * Else send him to DashboardActivity*/
-        Handler().postDelayed({
-            if(user != null){
-                val dashboardIntent = Intent(this, BottomNavActivity::class.java)
-                startActivity(dashboardIntent)
-                finish()
-            }else{
+        Handler(mainLooper).postDelayed({
+            if(user == null){
                 val signInIntent = Intent(this, SignInActivity::class.java)
                 startActivity(signInIntent)
+                finish()
+            }else{
+                val dashboardIntent = Intent(this, BottomNavActivity::class.java)
+                startActivity(dashboardIntent)
                 finish()
             }
         }, 2000)
