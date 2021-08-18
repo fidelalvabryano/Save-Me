@@ -140,7 +140,7 @@ class RegisterActivity : AppCompatActivity() {
         val token = getDeviceRegistrationToken()
 
         val client = AsyncHttpClient()
-        val url = "http://159.65.4.250:3000/api/account/v1/register"
+        val url = "http://34.101.177.1:3000/api/account/v1/register"
         val params = RequestParams()
         params.put("_id", uid)
         params.put("fullname", name)

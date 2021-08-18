@@ -42,7 +42,7 @@ class ProfileFragment : Fragment() {
 
     private fun getDetailUser() {
         val client = AsyncHttpClient()
-        val url = "http://159.65.4.250:3000/api/account/v1/fetch"
+        val url = "http://34.101.177.1:3000/api/account/v1/fetch"
         val params = RequestParams()
         params.put("_id", mAuth.currentUser?.uid)
         client.post(url, params ,object : AsyncHttpResponseHandler() {
